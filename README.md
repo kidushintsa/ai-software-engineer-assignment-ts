@@ -35,13 +35,13 @@ Docker allows the test suite to run in a clean environment similar to a CI pipel
 ### 1. Build the Docker image
 
 ```bash
-docker build -t ai-experts-assignment .
+docker build -t ai-software-engineer-assignment-ts .
 ```
 
 ### 2. Run the tests inside the container
 
 ```bash
-docker run ai-experts-assignment
+docker run ai-software-engineer-assignment-ts
 ```
 
 The container automatically runs:
