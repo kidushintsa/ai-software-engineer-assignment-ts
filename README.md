@@ -1,63 +1,148 @@
 # AI Experts Assignment (JS/TS)
 
-This assignment evaluates your ability to:
+This assignment demonstrates the ability to:
 
-- set up a small JavaScript/TypeScript project to run reliably (locally + in Docker),
-- pin dependencies for reproducible installs,
-- write focused tests to reproduce a bug,
-- implement a minimal, reviewable fix.
+- Set up a small JavaScript/TypeScript project that runs reliably both locally and in Docker.
+- Pin dependencies for reproducible installs.
+- Write focused tests to reproduce a bug.
+- Implement a minimal and reviewable fix.
 
-## What you will do
+---
 
-### 1) Dockerfile (required)
+# Running the Project Locally
 
-Create a `Dockerfile` so the project can run the test suite in a non-interactive, CI-style environment.
+### 1. Install dependencies
 
-Requirements:
+```bash
+npm install
+```
 
-- Your Docker image must run the test suite by default using npm test.
-- Ensure npm test works in a clean environment (Docker) without manual steps.
-- The build must install dependencies from package.json using npm install.
-- The image must run tests by default (use: `CMD ["npm", "test"]`).
+### 2. Run the test suite
 
-### 2) Pin dependencies (required)
+```bash
+npm test
+```
 
-- Pin dependency versions in package.json (no ^ / ~; use exact x.y.z).
-- Do not commit lockfiles (package-lock.json, yarn.lock, pnpm-lock.yaml).
+The test suite runs using **Vitest**.
+All tests should pass after the bug fix has been applied.
 
-### 3) README updates (required)
+---
 
-Update this README to include:
+# Running Tests Using Docker
 
-- how to run the tests locally,
-- how to build and run tests with Docker.
+Docker allows the test suite to run in a clean environment similar to a CI pipeline.
 
-### 4) Find + fix a bug (required)
+### 1. Build the Docker image
 
-There is a bug somewhere in this repository.
+```bash
+docker build -t ai-experts-assignment .
+```
 
-Your tasks:
+### 2. Run the tests inside the container
 
-- Identify the bug.
-- Apply the smallest possible fix to make the tests pass.
-- Keep the change minimal and reviewable (no refactors).
+```bash
+docker run ai-experts-assignment
+```
 
-## Constraints
+The container automatically runs:
 
-- Keep changes minimal and reviewable.
-- Do not refactor unrelated code.
-- Do not introduce extra tooling unless required.
-- You may add tests and the smallest code change needed to fix the bug.
+```bash
+npm test
+```
 
-### 5) EXPLANATION.md (required)
+This ensures the project works without any manual setup.
 
-Create `EXPLANATION.md` (max 250 words) containing:
+---
 
-- **What was the bug?**
-- **Why did it happen?**
-- **Why does your fix solve it?**
-- **One realistic case / edge case your tests still don’t cover**
+# Dependency Management
 
-## Submission
+All dependencies are pinned using **exact versions** in `package.json`.
 
-- Submit a public GitHub repository URL containing your solution to the Google form link provided.
+Example:
+
+```
+"vitest": "1.6.0"
+```
+
+Pinning versions prevents version drift and ensures reproducible installs.
+
+Lockfiles such as:
+
+- `package-lock.json`
+- `yarn.lock`
+- `pnpm-lock.yaml`
+
+are intentionally **not committed**, as required by the assignment.
+
+---
+
+# Bug Fix
+
+A bug existed in the OAuth2 token handling logic inside the HTTP client.
+
+The issue occurred when the stored token was a **plain object** rather than an instance of `OAuth2Token`.
+Because the refresh logic relied on an `instanceof` check, the client failed to refresh the token in that scenario.
+
+The fix ensures that tokens which are not valid `OAuth2Token` instances are refreshed properly.
+
+A detailed explanation is provided in:
+
+```
+EXPLANATION.md
+```
+
+---
+
+# Project Structure
+
+```
+src/
+  httpClient.ts
+  tokens.ts
+
+tests/
+  httpclient.test.ts
+
+Dockerfile
+README.md
+EXPLANATION.md
+package.json
+tsconfig.json
+.gitignore
+```
+
+---
+
+# Assignment Requirements
+
+## Dockerfile
+
+- The Docker image installs dependencies using `npm install`.
+- The container runs the test suite by default using:
+
+```
+CMD ["npm", "test"]
+```
+
+## Dependency Pinning
+
+- All dependencies use exact versions (`x.y.z`).
+- No lockfiles are committed.
+
+## Bug Fix
+
+- The bug was identified using the test suite.
+- A minimal change was applied to fix the issue.
+- No unrelated refactoring was performed.
+
+---
+
+# Submission
+
+This repository is submitted as a **public GitHub repository** containing:
+
+- Source code
+- Test suite
+- Docker configuration
+- Bug explanation
+- Instructions for running the project locally and with Docker
